@@ -1,0 +1,49 @@
+{
+  "name": "dsh-wsl-open",
+  "version": "0.1.0",
+  "description": "Open WSL Linux paths from DeepSeek Harness chat in Windows Explorer or the default Windows app.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/173787247/dsh-wsl-open.git"
+  },
+  "bugs": {
+    "url": "https://github.com/173787247/dsh-wsl-open/issues"
+  },
+  "homepage": "https://github.com/173787247/dsh-wsl-open#readme",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/windows-path.test.js"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "wsl",
+    "windows"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  }
+}
