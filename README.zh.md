@@ -24,6 +24,12 @@ DeepSeek Harness 插件：在聊天里点击 **WSL Linux 路径**，在 **Window
 
 打开**文件/目录**用本插件；开应用用 [dsh-wsl-launch](https://github.com/173787247/dsh-wsl-launch)；开网页用 [dsh-wsl-browser](https://github.com/173787247/dsh-wsl-browser)。
 
+## 0.2 改进
+
+- 虚线下划线点击更稳（像素命中）
+- 识别中文全角标点后的路径（如 `：/home/...`）
+- Windows 可执行文件走 `/mnt/c/Windows/...` 绝对路径 + PowerShell `Invoke-Item` 回退
+
 ## 安装
 
 ```sh
