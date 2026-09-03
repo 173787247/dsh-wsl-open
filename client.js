@@ -6,7 +6,7 @@ window.__ModuleLoader__.load({
 
     var inject = [];
     // Keep in sync with lib/scan-path.js.
-    var PATH_RE = /(?:^|[\s:(（`])(\/(?:home|mnt|opt|tmp|root|Users)[^\s<>"'`()（）\[\]，。；、]+)/g;
+    var PATH_RE = /(?:^|[\s:(（`：；、。，！？])(\/(?:home|mnt|opt|tmp|root|Users)[^\s<>"'`()（）\[\]，。；、]+)/g;
     var HIGHLIGHT = "dsh-wsl-open-path";
     var SKIP = "pre, a, button, script, style, textarea, input, [contenteditable], [data-input-mirror], [data-input-backdrop], [data-composer-card]";
 
@@ -115,13 +115,41 @@ window.__ModuleLoader__.load({
         });
       }
 
+      function pointInRects(x, y, rects, pad) {
+        for (var i = 0; i < rects.length; i++) {
+          var box = rects[i];
+          if (
+            x >= box.left - pad &&
+            x <= box.right + pad &&
+            y >= box.top - pad &&
+            y <= box.bottom + pad
+          ) {
+            return true;
+          }
+        }
+        return false;
+      }
+
       function hitBarePath(event) {
         if (bareHits.length === 0) return null;
+        var x = event.clientX;
+        var y = event.clientY;
+        // Prefer pixel hit-testing: clicking the dotted underline often
+        // yields an element caret, which misses a text-node range compare.
+        for (var i = 0; i < bareHits.length; i++) {
+          try {
+            if (pointInRects(x, y, bareHits[i].range.getClientRects(), 4)) {
+              return bareHits[i].path;
+            }
+          } catch (error) {
+            // Detached range after a React replace; rescan will refresh.
+          }
+        }
         var r = null;
         if (typeof document.caretRangeFromPoint === "function") {
-          r = document.caretRangeFromPoint(event.clientX, event.clientY);
+          r = document.caretRangeFromPoint(x, y);
         } else if (typeof document.caretPositionFromPoint === "function") {
-          var pos = document.caretPositionFromPoint(event.clientX, event.clientY);
+          var pos = document.caretPositionFromPoint(x, y);
           if (pos) {
             r = document.createRange();
             r.setStart(pos.offsetNode, pos.offset);
@@ -129,23 +157,47 @@ window.__ModuleLoader__.load({
           }
         }
         if (!r) return null;
-        for (var i = 0; i < bareHits.length; i++) {
-          var cr = bareHits[i].range;
-          if (
-            cr.startContainer === r.startContainer &&
-            cr.endContainer === r.endContainer &&
-            r.startOffset >= cr.startOffset &&
-            r.startOffset <= cr.endOffset
-          ) {
-            return bareHits[i].path;
+        var caretNode = r.startContainer;
+        if (caretNode && caretNode.nodeType === 3) {
+          for (var j = 0; j < bareHits.length; j++) {
+            var cr = bareHits[j].range;
+            if (
+              cr.startContainer === caretNode &&
+              r.startOffset >= cr.startOffset &&
+              r.startOffset <= cr.endOffset
+            ) {
+              return bareHits[j].path;
+            }
           }
+        }
+        return null;
+      }
+
+      function exactLinuxPath(text) {
+        var path = (text || "").trim().replace(/[.,;:]+$/, "");
+        if (!path.startsWith("/")) return null;
+        var found = findLinuxPaths(path);
+        for (var i = 0; i < found.length; i++) {
+          if (found[i].path === path) return path;
         }
         return null;
       }
 
       function onClick(event) {
         var target = event.target;
+        if (target && target.nodeType === 3) target = target.parentElement;
         if (!target || target.nodeType !== 1) return;
+
+        var clickable = target.closest("button, a, code");
+        if (clickable) {
+          var mentioned = exactLinuxPath(clickable.textContent);
+          if (mentioned) {
+            event.preventDefault();
+            event.stopPropagation();
+            openPath(mentioned);
+            return;
+          }
+        }
         if (target.closest("button, a, pre, textarea, input, [contenteditable]")) return;
 
         var bare = hitBarePath(event);
@@ -153,16 +205,7 @@ window.__ModuleLoader__.load({
           event.preventDefault();
           event.stopPropagation();
           openPath(bare);
-          return;
         }
-
-        var code = target.closest("code");
-        if (!code) return;
-        var path = (code.textContent || "").trim().replace(/[.,;:]+$/, "");
-        if (!path.startsWith("/") || findLinuxPaths(path).every(function (hit) { return hit.path !== path; })) return;
-        event.preventDefault();
-        event.stopPropagation();
-        openPath(path);
       }
 
       function start() {

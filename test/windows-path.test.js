@@ -5,6 +5,7 @@ import {
   isSafeLinuxPath,
   isWithin,
   toWindowsPath,
+  windowsBin,
 } from "../lib/windows-path.js";
 import { matchLinuxPaths } from "../lib/scan-path.js";
 
@@ -63,5 +64,25 @@ describe("matchLinuxPaths", () => {
       matchLinuxPaths("see /mnt/c/Users/rchua/GO/deck.pptx."),
       ["/mnt/c/Users/rchua/GO/deck.pptx"],
     );
+  });
+
+  it("finds a path after a fullwidth colon", () => {
+    const text = "已经生成好了：/home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx";
+    assert.deepEqual(matchLinuxPaths(text), [
+      "/home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx",
+    ]);
+  });
+});
+
+describe("windowsBin", () => {
+  it("prefers an absolute WSL Windows path when that file exists", () => {
+    assert.equal(
+      windowsBin("powershell.exe", { exists: (p) => p.endsWith("powershell.exe") }),
+      "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    );
+  });
+
+  it("falls back to the bare name when nothing is mounted", () => {
+    assert.equal(windowsBin("cmd.exe", { exists: () => false }), "cmd.exe");
   });
 });

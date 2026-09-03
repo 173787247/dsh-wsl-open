@@ -8,6 +8,7 @@ import {
   isSafeLinuxPath,
   isWithin,
   toWindowsPath,
+  windowsBin,
 } from "./lib/windows-path.js";
 
 export const name = "dsh-wsl-open";
@@ -132,30 +133,42 @@ function nativeWinPath(winPath) {
   return winPath;
 }
 
-function windowsSpawned(err) {
-  // explorer.exe often exits 1 after reusing a window; ENOENT is a string code.
-  return !err || typeof err.code === "number";
+function powershellLiteral(winPath) {
+  return `'${winPath.replace(/'/g, "''")}'`;
 }
 
-function openOnWindows(winPath, isDir) {
-  return new Promise((resolveOpen) => {
-    const explore = (next) => {
-      execFile("explorer.exe", [winPath], { timeout: 15000 }, (err) => {
-        if (windowsSpawned(err)) resolveOpen(true);
-        else if (next) next();
-        else resolveOpen(false);
-      });
-    };
-    const start = (next) => {
-      execFile("cmd.exe", ["/c", "start", "", winPath], { timeout: 15000 }, (err) => {
-        if (windowsSpawned(err)) resolveOpen(true);
-        else if (next) next();
-        else resolveOpen(false);
-      });
-    };
-    if (isDir) explore(() => start(null));
-    else start(() => explore(null));
+function spawnFile(bin, args) {
+  return new Promise((resolveSpawn) => {
+    execFile(bin, args, { timeout: 15000 }, (err) => {
+      resolveSpawn(err);
+    });
   });
+}
+
+async function openOnWindows(winPath, isDir) {
+  const ps = windowsBin("powershell.exe");
+  const cmd = windowsBin("cmd.exe");
+  const explorer = windowsBin("explorer.exe");
+  const invoke = ["-NoProfile", "-NonInteractive", "-Command", `Invoke-Item -LiteralPath ${powershellLiteral(winPath)}`];
+  const attempts = isDir
+    ? [
+        { bin: explorer, args: [winPath], explorerQuirk: true },
+        { bin: ps, args: invoke },
+      ]
+    : [
+        { bin: ps, args: invoke },
+        { bin: cmd, args: ["/c", "start", "", winPath] },
+        { bin: explorer, args: [winPath], explorerQuirk: true },
+      ];
+
+  for (const attempt of attempts) {
+    const err = await spawnFile(attempt.bin, attempt.args);
+    if (!err) return true;
+    // explorer often exits 1 after reusing a window.
+    if (attempt.explorerQuirk && typeof err.code === "number") return true;
+    console.warn(`[dsh-wsl-open] ${attempt.bin} failed code=${err.code ?? ""} ${err.message}`);
+  }
+  return false;
 }
 
 function isSameOrigin(req) {
