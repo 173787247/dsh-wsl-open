@@ -8,6 +8,18 @@ DeepSeek Harness 插件：在聊天里点击 **WSL Linux 路径**，在 **Window
 
 [English → README.md](./README.md)
 
+## 在套件里的位置
+
+用 Windows 资源管理器或默认应用打开一个 Linux 路径。
+
+```mermaid
+flowchart LR
+  agent["dsh 聊天"] --> open["dsh-wsl-open"] --> win["资源管理器或默认应用"]
+```
+
+整套关系图和版本快照：[dsh-wsl-kit 中文说明](https://github.com/173787247/dsh-wsl-kit/blob/master/README.zh.md)。本插件是 **0.2.0**（daily，也在 llm）。不要把那份总表抄进本 README。
+
+
 ---
 ## 兼容性
 

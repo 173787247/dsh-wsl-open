@@ -8,6 +8,18 @@ Part of **[dsh-wsl-kit](https://github.com/173787247/dsh-wsl-kit)**.
 
 [中文说明 → README.zh.md](./README.zh.md)
 
+## Where it sits
+
+Opens a Linux path in Windows Explorer or the default Windows app.
+
+```mermaid
+flowchart LR
+  agent["dsh chat"] --> open["dsh-wsl-open"] --> win["Explorer or default app"]
+```
+
+Suite diagram and version snapshot: [dsh-wsl-kit](https://github.com/173787247/dsh-wsl-kit#how-the-pieces-fit). This plugin is **0.2.0** (daily; also in llm). Do not copy that matrix into this README.
+
+
 ---
 ## Compatibility
 
