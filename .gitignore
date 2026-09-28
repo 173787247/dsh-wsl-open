@@ -1,1 +1,16 @@
 node_modules/
+
+# ── 凭据 ──────────────────────────────────────────────────────────────
+# DSH 的密钥在 ~/.dsh/.env（600），那个目录不是 git 仓。
+# 这里防的是在仓库里临时建 .env 调试时被 git add -A 带上。
+# .gitignore 只防手滑 —— git add -f 能绕过，且一旦推上去就永久在历史里。
+#
+# `*.env` 这条不能省：只写 `.env` 的话，examples/test.env 这种文件名照样进仓。
+.env
+.env.*
+*.env
+!*.env.example
+!*.env.template
+*.pem
+*.key
+credentials*.yaml
