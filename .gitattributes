@@ -1,0 +1,16 @@
+* text=auto eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+
+# Binary — never normalize or merge
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.jar binary
+*.woff binary
+*.woff2 binary
