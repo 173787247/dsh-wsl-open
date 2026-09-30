@@ -12,15 +12,15 @@ import { matchLinuxPaths } from "../lib/scan-path.js";
 describe("toWindowsPath", () => {
   it("maps /mnt/c to a Windows drive letter", () => {
     assert.equal(
-      toWindowsPath("/mnt/c/Users/rchua/GO/deck.pptx"),
-      "C:\\Users\\rchua\\GO\\deck.pptx",
+      toWindowsPath("/mnt/c/Users/alice/GO/deck.pptx"),
+      "C:\\Users\\alice\\GO\\deck.pptx",
     );
   });
 
   it("maps a Linux home path to a \\\\wsl$ UNC path", () => {
     assert.equal(
-      toWindowsPath("/home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx", { distro: "Ubuntu-24.04" }),
-      "\\\\wsl$\\Ubuntu-24.04\\home\\rchua\\GO\\o2o\\大洋晶典_O2O战略汇报.pptx",
+      toWindowsPath("/home/alice/GO/o2o/大洋晶典_O2O战略汇报.pptx", { distro: "Ubuntu-24.04" }),
+      "\\\\wsl$\\Ubuntu-24.04\\home\\alice\\GO\\o2o\\大洋晶典_O2O战略汇报.pptx",
     );
   });
 
@@ -31,16 +31,16 @@ describe("toWindowsPath", () => {
 
 describe("isSafeLinuxPath", () => {
   it("accepts absolute Linux paths and rejects NUL or oversize", () => {
-    assert.equal(isSafeLinuxPath("/home/rchua/a.pptx"), true);
+    assert.equal(isSafeLinuxPath("/home/alice/a.pptx"), true);
     assert.equal(isSafeLinuxPath("C:\\Users\\a"), false);
     assert.equal(isSafeLinuxPath("/home/\0x"), false);
   });
 });
 
 describe("isWithin", () => {
-  it("does not treat /home/rchua as a prefix of /home/rchua2", () => {
-    assert.equal(isWithin("/home/rchua", "/home/rchua/GO/a.pptx"), true);
-    assert.equal(isWithin("/home/rchua", "/home/rchua2/a.pptx"), false);
+  it("does not treat /home/alice as a prefix of /home/alice2", () => {
+    assert.equal(isWithin("/home/alice", "/home/alice/GO/a.pptx"), true);
+    assert.equal(isWithin("/home/alice", "/home/alice2/a.pptx"), false);
   });
 });
 
@@ -53,23 +53,23 @@ describe("detectWsl", () => {
 
 describe("matchLinuxPaths", () => {
   it("finds a CJK pptx path in plain prose", () => {
-    const text = "文件已写到 /home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx 请查收。";
+    const text = "文件已写到 /home/alice/GO/o2o/大洋晶典_O2O战略汇报.pptx 请查收。";
     assert.deepEqual(matchLinuxPaths(text), [
-      "/home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx",
+      "/home/alice/GO/o2o/大洋晶典_O2O战略汇报.pptx",
     ]);
   });
 
   it("finds /mnt/c paths and strips a trailing period", () => {
     assert.deepEqual(
-      matchLinuxPaths("see /mnt/c/Users/rchua/GO/deck.pptx."),
-      ["/mnt/c/Users/rchua/GO/deck.pptx"],
+      matchLinuxPaths("see /mnt/c/Users/alice/GO/deck.pptx."),
+      ["/mnt/c/Users/alice/GO/deck.pptx"],
     );
   });
 
   it("finds a path after a fullwidth colon", () => {
-    const text = "已经生成好了：/home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx";
+    const text = "已经生成好了：/home/alice/GO/o2o/大洋晶典_O2O战略汇报.pptx";
     assert.deepEqual(matchLinuxPaths(text), [
-      "/home/rchua/GO/o2o/大洋晶典_O2O战略汇报.pptx",
+      "/home/alice/GO/o2o/大洋晶典_O2O战略汇报.pptx",
     ]);
   });
 });
