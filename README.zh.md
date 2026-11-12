@@ -30,7 +30,7 @@ flowchart LR
 | **最新验证** | 以 [dsh-wsl-kit 兼容性](https://github.com/173787247/dsh-wsl-kit#compatibility-2026-09) 为准（当前 **`0.2.2-rc.2`**）— 套件唯一真源 |
 | **套件档位** | `daily`（亦含于 `github` / `full`；fetch+net 亦在 `llm`） |
 | **云端 Flash** | settings / `llm-deepseek` 使用 **`deepseek-flash`**（V4.1 Flash）；本插件不配置模型 id |
-| **Agent Teams** | 上游实验包；本插件不依赖 |
+| **Agent Teams** | dsh rc.2 由核心支持（具名子代理 + 共享任务板）；旧实验 profile 已退役。本插件不依赖 |
 
 套件版本地板：[`check-plugin-versions.sh`](https://github.com/173787247/dsh-wsl-kit/blob/master/scripts/check-plugin-versions.sh)。故障树：[TROUBLESHOOTING.zh.md](https://github.com/173787247/dsh-wsl-kit/blob/master/docs/TROUBLESHOOTING.zh.md)。
 

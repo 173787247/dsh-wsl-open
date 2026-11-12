@@ -30,7 +30,7 @@ Suite diagram and version snapshot: [dsh-wsl-kit](https://github.com/173787247/d
 | **Latest verified** | See [dsh-wsl-kit Compatibility](https://github.com/173787247/dsh-wsl-kit#compatibility-2026-09) (currently **`0.2.2-rc.2`**) — single source of truth for the suite |
 | **Kit set** | `daily` (also in `github` / `full`; fetch+net also in `llm`) |
 | **Cloud Flash** | Use model id **`deepseek-flash`** (V4.1 Flash) in `~/.dsh/settings.yaml` / `llm-deepseek` — not configured by this plugin |
-| **Agent Teams** | Upstream experimental; not required here |
+| **Agent Teams** | Core support in dsh rc.2 (named subagents + shared task board); the old experimental profile is retired. Not required here |
 
 Suite floor versions: kit [`check-plugin-versions.sh`](https://github.com/173787247/dsh-wsl-kit/blob/master/scripts/check-plugin-versions.sh). Fault tree: [TROUBLESHOOTING.md](https://github.com/173787247/dsh-wsl-kit/blob/master/docs/TROUBLESHOOTING.md).
 
