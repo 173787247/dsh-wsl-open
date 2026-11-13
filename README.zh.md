@@ -27,7 +27,7 @@ flowchart LR
 |----|----|
 | **插件** | `dsh-wsl-open` **0.2.0** |
 | **最低 dsh** | ≥ **0.1.2**（Windows 中继 `:3081` 一次性 `?token=`） |
-| **最新验证** | 以 [dsh-wsl-kit 兼容性](https://github.com/173787247/dsh-wsl-kit#compatibility-2026-09) 为准（当前 **`0.2.2-rc.2`**）— 套件唯一真源 |
+| **最新验证** | 以 [dsh-wsl-kit 兼容性](https://github.com/173787247/dsh-wsl-kit#compatibility-2026-09) 为准（当前 **`0.2.2-rc.3`**）— 套件唯一真源 |
 | **套件档位** | `daily`（亦含于 `github` / `full`；fetch+net 亦在 `llm`） |
 | **云端 Flash** | settings / `llm-deepseek` 使用 **`deepseek-flash`**（V4.1 Flash）；本插件不配置模型 id |
 | **Agent Teams** | dsh rc.2 由核心支持（具名子代理 + 共享任务板）；旧实验 profile 已退役。本插件不依赖 |
